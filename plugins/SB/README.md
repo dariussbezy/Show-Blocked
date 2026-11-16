@@ -12,6 +12,7 @@ Shows messages from users you blocked or ignored as normal messages, as if they 
 - **Show ignored users' messages** (on)
 - **Also in group chats** (on)
 - **Also in direct messages** (on)
+- **Allow pings from blocked users** (on): messages that mention you (or @everyone) stay visible and can ping you. Off keeps Discord's normal behaviour for those messages.
 
 ## Notes
 - Only affects how messages are displayed. It does not unblock anyone, change your relationships or notifications, or send anything.

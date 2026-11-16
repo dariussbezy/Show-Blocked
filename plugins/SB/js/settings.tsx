@@ -28,7 +28,7 @@ const GUIDE: [string, string][] = [
 export default function SettingsComponent({
 	api: { jsonStorage: storage },
 }: ComponentProps<PluginSettingsComponent<{ jsonStorage: Settings }>>) {
-	const { blocked, ignored, groupChats, directMessages } = {
+	const { blocked, ignored, groupChats, directMessages, pings } = {
 		...DefaultSettings,
 		...storage.use(),
 	}
@@ -63,6 +63,13 @@ export default function SettingsComponent({
 							subLabel="Only changes how old messages look. Blocked and ignored users still cannot DM you."
 							value={directMessages}
 							onValueChange={directMessages => storage.set({ directMessages })}
+						/>
+						<Design.TableSwitchRow
+							icon={icon('BellIcon')}
+							label="Allow pings from blocked users"
+							subLabel="Messages that mention you stay visible and can ping you. Off keeps Discord's behaviour for them."
+							value={pings}
+							onValueChange={pings => storage.set({ pings })}
 						/>
 					</Design.TableRowGroup>
 					<Design.TableRowGroup title="Quick guide">

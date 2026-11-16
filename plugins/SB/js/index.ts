@@ -9,6 +9,9 @@ const DM = 1
 const GROUP_DM = 3
 
 interface MessageLike {
+	mentions?: (string | { id?: string })[]
+	mention_everyone?: boolean
+	mentionEveryone?: boolean
 	channel_id?: string
 	channelId?: string
 }
@@ -16,6 +19,10 @@ interface MessageLike {
 interface RelationshipStoreLike {
 	isBlockedForMessage: (message: MessageLike) => boolean
 	isIgnoredForMessage: (message: MessageLike) => boolean
+}
+
+interface UserStoreLike {
+	getCurrentUser(): { id: string } | undefined
 }
 
 interface ChannelStoreLike {
@@ -32,9 +39,23 @@ export default plugin<{ jsonStorage: Settings }>({
 			| ChannelStoreLike
 			| undefined
 
+		const users = Stores.UserStore as unknown as UserStoreLike | undefined
+
 		if (!relationships || !channels) {
 			logger.warn('RelationshipStore or ChannelStore not found')
 			return
+		}
+
+		const pingsMe = (message: MessageLike) => {
+			if (message.mention_everyone ?? message.mentionEveryone) return true
+			const me = users?.getCurrentUser()?.id
+			return (
+				!!me &&
+				!!message.mentions?.some(
+					mention =>
+						(typeof mention === 'string' ? mention : mention.id) === me,
+				)
+			)
 		}
 
 		// Server channels and threads always; group chats and 1:1 DMs by setting.
@@ -45,6 +66,8 @@ export default plugin<{ jsonStorage: Settings }>({
 			try {
 				const settings = { ...DefaultSettings, ...jsonStorage.cache }
 				if (!settings[key] || !message) return false
+				// Pings off: messages that mention you keep Discord's behaviour
+				if (!settings.pings && pingsMe(message)) return false
 				const channelId = message.channel_id ?? message.channelId
 				if (!channelId) return false
 				const type = channels.getChannel(channelId)?.type

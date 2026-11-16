@@ -3,6 +3,7 @@ export interface Settings {
 	ignored: boolean
 	groupChats: boolean
 	directMessages: boolean
+	pings: boolean
 }
 
 export const DefaultSettings: Settings = {
@@ -10,4 +11,5 @@ export const DefaultSettings: Settings = {
 	ignored: true,
 	groupChats: true,
 	directMessages: true,
+	pings: true,
 }

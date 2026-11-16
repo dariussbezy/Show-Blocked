@@ -5,6 +5,7 @@ A [Valenced](https://github.com/valenced-mod) plugin that shows messages from us
 ## Behaviour
 - **Servers and threads:** messages from blocked and ignored users show normally.
 - **Group chats:** same, with the **Also in group chats** switch (on by default).
+- **Pings:** the **Allow pings from blocked users** switch (on by default) keeps messages that mention you visible.
 - **1:1 DMs:** same, with the **Also in direct messages** switch (on by default). Blocked and ignored users still cannot DM you; this only changes how old messages look.
 
 It only changes how messages are displayed. It does not unblock anyone, change notifications or send anything.
