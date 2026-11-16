@@ -9,6 +9,9 @@ const DM = 1
 const GROUP_DM = 3
 
 interface MessageLike {
+	author?: { id?: string }
+	authorId?: string
+	author_id?: string
 	mentions?: (string | { id?: string })[]
 	mention_everyone?: boolean
 	mentionEveryone?: boolean
@@ -66,6 +69,9 @@ export default plugin<{ jsonStorage: Settings }>({
 			try {
 				const settings = { ...DefaultSettings, ...jsonStorage.cache }
 				if (!settings[key] || !message) return false
+				const authorId =
+					message.author?.id ?? message.authorId ?? message.author_id
+				if (authorId && settings.excluded?.includes(authorId)) return false
 				// Pings off: messages that mention you keep Discord's behaviour
 				if (!settings.pings && pingsMe(message)) return false
 				const channelId = message.channel_id ?? message.channelId

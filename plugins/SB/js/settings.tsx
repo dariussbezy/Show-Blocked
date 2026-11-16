@@ -1,6 +1,8 @@
 import Page from '@valenced/components/Page'
 import TableRowAssetIcon from '@valenced/components/TableRowAssetIcon'
 import { Design } from '@valenced/discord/design'
+import { Stores } from '@valenced/discord/flux'
+import { useState } from 'react'
 import { ScrollView } from 'react-native'
 import manifest from '../manifest.json'
 import { DefaultSettings } from './shared'
@@ -9,6 +11,20 @@ import type { ComponentProps } from 'react'
 import type { Settings } from './shared'
 
 const icon = (name: string) => <TableRowAssetIcon name={name} />
+
+interface Relationships {
+	getBlockedIDs?: () => string[]
+	getIgnoredIDs?: () => string[]
+}
+
+interface Users {
+	getUser(id: string): { username?: string; globalName?: string } | undefined
+}
+
+const nameOf = (id: string) => {
+	const user = (Stores.UserStore as unknown as Users | undefined)?.getUser(id)
+	return user?.globalName ?? user?.username ?? id
+}
 
 const GUIDE: [string, string][] = [
 	[
@@ -32,6 +48,22 @@ export default function SettingsComponent({
 		...DefaultSettings,
 		...storage.use(),
 	}
+
+	const [draft, setDraft] = useState('')
+	const excluded = storage.use()?.excluded ?? []
+	const relationships = Stores.RelationshipStore as unknown as
+		| Relationships
+		| undefined
+	const blockedIds = relationships?.getBlockedIDs?.() ?? []
+	const ignoredIds = relationships?.getIgnoredIDs?.() ?? []
+	const ids = [...new Set([...blockedIds, ...ignoredIds, ...excluded])]
+	const toggle = (id: string, keep: boolean) =>
+		storage.set({
+			excluded: keep
+				? [...new Set([...excluded, id])]
+				: excluded.filter(other => other !== id),
+		})
+	const validDraft = /^d{15,25}$/.test(draft.trim())
 
 	return (
 		<ScrollView keyboardShouldPersistTaps="handled">
@@ -72,6 +104,39 @@ export default function SettingsComponent({
 							onValueChange={pings => storage.set({ pings })}
 						/>
 					</Design.TableRowGroup>
+					<Design.TableRowGroup title="Keep these hidden">
+						{ids.length === 0 && (
+							<Design.TableRow
+								icon={icon('CircleInformationIcon')}
+								label="No blocked or ignored users"
+							/>
+						)}
+						{ids.map(id => (
+							<Design.TableSwitchRow
+								key={id}
+								icon={icon('DenyIcon')}
+								label={nameOf(id)}
+								subLabel={`${blockedIds.includes(id) ? 'Blocked' : ignoredIds.includes(id) ? 'Ignored' : 'Not in your lists'} · keep their messages hidden`}
+								value={excluded.includes(id)}
+								onValueChange={keep => toggle(id, keep)}
+							/>
+						))}
+					</Design.TableRowGroup>
+					<Design.TextInput
+						label="Keep a user hidden by ID"
+						placeholder="User ID"
+						value={draft}
+						maxLength={25}
+						onChange={setDraft}
+					/>
+					<Design.Button
+						text="Add"
+						disabled={!validDraft}
+						onPress={() => {
+							toggle(draft.trim(), true)
+							setDraft('')
+						}}
+					/>
 					<Design.TableRowGroup title="Quick guide">
 						{GUIDE.map(([label, subLabel]) => (
 							<Design.TableRow

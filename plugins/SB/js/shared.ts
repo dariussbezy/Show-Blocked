@@ -4,6 +4,8 @@ export interface Settings {
 	groupChats: boolean
 	directMessages: boolean
 	pings: boolean
+	/** User IDs whose messages keep Discord's blocked/ignored look. */
+	excluded: string[]
 }
 
 export const DefaultSettings: Settings = {
@@ -12,4 +14,5 @@ export const DefaultSettings: Settings = {
 	groupChats: true,
 	directMessages: true,
 	pings: true,
+	excluded: [],
 }
