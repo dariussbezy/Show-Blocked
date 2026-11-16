@@ -37,7 +37,7 @@ export default plugin<{ jsonStorage: Settings }>({
 			return
 		}
 
-		// Show only in server channels, threads and (optionally) group chats; never 1:1 DMs.
+		// Server channels and threads always; group chats and 1:1 DMs by setting.
 		const shouldShow = (
 			message: MessageLike | undefined,
 			key: 'blocked' | 'ignored',
@@ -49,7 +49,8 @@ export default plugin<{ jsonStorage: Settings }>({
 				if (!channelId) return false
 				const type = channels.getChannel(channelId)?.type
 				// Unknown channel: keep Discord's behaviour
-				if (type === undefined || type === DM) return false
+				if (type === undefined) return false
+				if (type === DM) return settings.directMessages
 				if (type === GROUP_DM) return settings.groupChats
 				return true
 			} catch (error) {

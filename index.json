@@ -5,17 +5,28 @@
   "plugins": {
     "dariuss.show-blocked": {
       "name": "Show Blocked",
-      "description": "Shows messages from blocked and ignored users in servers, threads and group chats as normal messages, without the collapsed group or the Show message tap. DMs stay protected.",
+      "description": "Shows messages from blocked and ignored users in servers, threads and group chats as normal messages, without the collapsed group or the Show message tap. Optional in group chats and DMs.",
       "author": "dariussbezy <908767091522420817> (https://github.com/dariussbezy \"GitHub\")",
       "icon": "EyeIcon",
       "channels": {
-        "latest": "1.0.0"
+        "latest": "1.1.0"
       },
       "versions": {
         "1.0.0": {
           "url": "https://raw.githubusercontent.com/dariussbezy/Show-Blocked/main/pool/dariuss.show-blocked@1.0.0.zip",
           "sha256": "65ffa94ffd5da470c63f72bc1e00db9f838aedb453b246770a9c63514fe45d8a",
           "size": 2060,
+          "dependencies": {
+            "valenced.api": {
+              "version": ">=1 <2"
+            },
+            "discord": {}
+          }
+        },
+        "1.1.0": {
+          "url": "https://raw.githubusercontent.com/dariussbezy/Show-Blocked/main/pool/dariuss.show-blocked@1.1.0.zip",
+          "sha256": "50f3427a6ba9d8e5d664e699ebb7293f55871a4ba1f9636ac1a46770bc67ce73",
+          "size": 2052,
           "dependencies": {
             "valenced.api": {
               "version": ">=1 <2"

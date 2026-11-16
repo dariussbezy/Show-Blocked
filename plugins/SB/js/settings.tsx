@@ -17,7 +17,7 @@ const GUIDE: [string, string][] = [
 	],
 	[
 		'Where',
-		'Server channels, threads and, if enabled, group chats. 1:1 DMs are never touched.',
+		'Server channels and threads, plus group chats and 1:1 DMs if enabled.',
 	],
 	[
 		'Not showing yet?',
@@ -28,7 +28,7 @@ const GUIDE: [string, string][] = [
 export default function SettingsComponent({
 	api: { jsonStorage: storage },
 }: ComponentProps<PluginSettingsComponent<{ jsonStorage: Settings }>>) {
-	const { blocked, ignored, groupChats } = {
+	const { blocked, ignored, groupChats, directMessages } = {
 		...DefaultSettings,
 		...storage.use(),
 	}
@@ -57,12 +57,12 @@ export default function SettingsComponent({
 							value={groupChats}
 							onValueChange={groupChats => storage.set({ groupChats })}
 						/>
-					</Design.TableRowGroup>
-					<Design.TableRowGroup>
-						<Design.TableRow
+						<Design.TableSwitchRow
 							icon={icon('UserIcon')}
-							label="Direct messages stay protected"
-							subLabel="Blocked and ignored users still cannot DM you, and 1:1 DM conversations with them keep Discord's normal behaviour."
+							label="Also in direct messages"
+							subLabel="Only changes how old messages look. Blocked and ignored users still cannot DM you."
+							value={directMessages}
+							onValueChange={directMessages => storage.set({ directMessages })}
 						/>
 					</Design.TableRowGroup>
 					<Design.TableRowGroup title="Quick guide">

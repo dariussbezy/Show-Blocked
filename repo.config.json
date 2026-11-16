@@ -3,7 +3,7 @@
   "description": "Shows messages from blocked and ignored users in servers, threads and group chats as normal messages, without the collapsed group or the Show message tap. DMs stay protected.",
   "channels": {
     "dariuss.show-blocked": {
-      "latest": "1.0.0"
+      "latest": "1.1.0"
     }
   }
 }
